@@ -1,0 +1,276 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f0faf0;
+  color: #1a1a1a;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(135deg, #087f23, #1b5e20);
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+header img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+header p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-top: 6px;
+}
+
+/* ===== SECTIONS ===== */
+.products-section,
+.order-section {
+  padding: 40px 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #087f23;
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+}
+
+/* ===== PRODUCT CARDS ===== */
+.products {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  width: 220px;
+  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.card img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-size: 1rem;
+  color: #1b5e20;
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 14px;
+}
+
+.card button {
+  background: #087f23;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.card button:hover {
+  background: #1b5e20;
+}
+
+/* ===== ORDER FORM ===== */
+.order {
+  background: white;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 30px 24px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order input,
+.order textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.order input:focus,
+.order textarea:focus {
+  outline: none;
+  border-color: #087f23;
+}
+
+.order input[readonly] {
+  background: #f5f5f5;
+  cursor: default;
+}
+
+#orderBtn {
+  background: #087f23;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+#orderBtn:hover {
+  background: #1b5e20;
+}
+
+#orderBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== ORDER MESSAGE ===== */
+.order-msg {
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.order-msg.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.order-msg.error {
+  background: #fce4ec;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #1b5e20;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #a5d6a7;
+  text-decoration: none;
+}
+
+/* ===== ADMIN ===== */
+.admin-wrap {
+  padding: 30px 16px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+thead {
+  background: #087f23;
+  color: white;
+}
+
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: #f9fff9;
+}
+
+.status-btn {
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.status-btn:hover {
+  opacity: 0.85;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.4rem;
+  }
+
+  .products {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+  }
+
+  th, td {
+    font-size: 0.78rem;
+    padding: 8px 10px;
+  }
+}
