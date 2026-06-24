@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kani Milk Agency</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <img src="logo.png" alt="Kani Milk Logo">
+    <h1>Kani Milk Agency</h1>
+    <p>Fresh Milk • Daily Delivery • Pure Quality</p>
+  </header>
+
+  <!-- Products -->
+  <section class="products-section">
+    <h2>Our Products</h2>
+    <div class="products">
+
+      <div class="card">
+        <img src="cowmilk.jpg" alt="Jersey Gold Milk">
+        <h3>Jersey Gold Milk</h3>
+        <p>Rich & full-cream daily fresh</p>
+        <button onclick="selectProduct('Jersey Gold Milk')">Select</button>
+      </div>
+
+      <div class="card">
+        <img src="bluetonedmilk.png" alt="Blue Toned Milk">
+        <h3>Blue Toned Milk</h3>
+        <p>Low fat, healthy & light</p>
+        <button onclick="selectProduct('Blue Toned Milk')">Select</button>
+      </div>
+
+      <div class="card">
+        <img src="tonedcurd.png" alt="Fresh Curd">
+        <h3>Fresh Curd</h3>
+        <p>Thick, natural & probiotic</p>
+        <button onclick="selectProduct('Fresh Curd')">Select</button>
+      </div>
+
+      <div class="card">
+        <img src="goldicecream.png" alt="Ice Cream">
+        <h3>Gold Ice Cream</h3>
+        <p>Creamy & delicious treat</p>
+        <button onclick="selectProduct('Ice Cream')">Select</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Order Form -->
+  <section class="order-section">
+    <h2>Place Your Order</h2>
+    <div class="order">
+      <input id="name"     type="text" placeholder="Your Name">
+      <input id="phone"    type="tel"  placeholder="Phone Number (10 digits)" maxlength="10">
+      <input id="product"  type="text" placeholder="Select a product above" readonly>
+      <input id="quantity" type="text" placeholder="Quantity (e.g. 1 Litre)">
+      <textarea id="address" placeholder="Delivery Address" rows="3"></textarea>
+
+      <div id="orderMsg" class="order-msg" style="display:none;"></div>
+
+      <button id="orderBtn" onclick="sendOrder()">🛒 Order Now</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>📞 Call us: <a href="tel:+918838416013">8838416013</a></p>
+    <p>© 2025 Kani Milk Agency. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ Firebase v8 CDN (works on Neocities, no import/export needed) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // ✅ Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQAY_wXDlU5twKU9DLZCh3lgfBfLAy7AQ",
+      authDomain: "kani-milk-agency-9323b.firebaseapp.com",
+      projectId: "kani-milk-agency-9323b",
+      storageBucket: "kani-milk-agency-9323b.firebasestorage.app",
+      messagingSenderId: "317392951345",
+      appId: "1:317392951345:web:1768ca6b7725812491dd10"
+    };
+
+    // ✅ Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ✅ Select product from card
+    function selectProduct(name) {
+      document.getElementById("product").value = name;
+      document.querySelector(".order-section").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // ✅ Show message on screen
+    function showMessage(msg, type) {
+      const el = document.getElementById("orderMsg");
+      el.textContent = msg;
+      el.className = "order-msg " + type;
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 4000);
+    }
+
+    // ✅ Send order to Firebase
+    function sendOrder() {
+      const name     = document.getElementById("name").value.trim();
+      const phone    = document.getElementById("phone").value.trim();
+      const product  = document.getElementById("product").value.trim();
+      const quantity = document.getElementById("quantity").value.trim();
+      const address  = document.getElementById("address").value.trim();
+
+      // Validation
+      if (!name || !phone || !product || !quantity || !address) {
+        showMessage("⚠️ Please fill in all fields before ordering.", "error");
+        return;
+      }
+
+      if (!/^\d{10}$/.test(phone)) {
+        showMessage("⚠️ Please enter a valid 10-digit phone number.", "error");
+        return;
+      }
+
+      const btn = document.getElementById("orderBtn");
+      btn.disabled = true;
+      btn.textContent = "Placing Order...";
+
+      // ✅ Save to Firestore
+      db.collection("orders").add({
+        name: name,
+        phone: phone,
+        product: product,
+        quantity: quantity,
+        address: address,
+        status: "Pending",
+        time: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(function() {
+        showMessage("✅ Order placed successfully!", "success");
+
+        // Clear form
+        ["name", "phone", "product", "quantity", "address"].forEach(function(id) {
+          document.getElementById(id).value = "";
+        });
+
+        // WhatsApp message
+        const msg =
+          "🥛 *Kani Milk Agency Order*\n\n" +
+          "👤 Name: " + name +
+          "\n📞 Phone: " + phone +
+          "\n🛒 Product: " + product +
+          "\n📦 Quantity: " + quantity +
+          "\n📍 Address: " + address +
+          "\n⏳ Status: Pending";
+
+        setTimeout(function() {
+          window.open(
+            "https://wa.me/918838416013?text=" + encodeURIComponent(msg),
+            "_blank"
+          );
+        }, 1000);
+      })
+      .catch(function(error) {
+        showMessage("❌ Order failed: " + error.message, "error");
+        console.error("Firebase Error:", error);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = "🛒 Order Now";
+      });
+    }
+  </script>
+
+</body>
+</html>
