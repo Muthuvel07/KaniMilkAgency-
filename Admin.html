@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kani Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🛡️ Kani Milk Admin</h1>
+    <p>Total Orders: <strong id="orderCount">0</strong></p>
+  </header>
+
+  <div class="admin-wrap">
+    <h2>Live Orders</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Address</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="orders"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQAY_wXDlU5twKU9DLZCh3lgfBfLAy7AQ",
+      authDomain: "kani-milk-agency-9323b.firebaseapp.com",
+      projectId: "kani-milk-agency-9323b",
+      storageBucket: "kani-milk-agency-9323b.firebasestorage.app",
+      messagingSenderId: "317392951345",
+      appId: "1:317392951345:web:1768ca6b7725812491dd10"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const box = document.getElementById("orders");
+    const countEl = document.getElementById("orderCount");
+
+    // ✅ Live orders, newest first
+    db.collection("orders")
+      .orderBy("time", "desc")
+      .onSnapshot(function(snapshot) {
+        box.innerHTML = "";
+        countEl.textContent = snapshot.size;
+
+        if (snapshot.empty) {
+          box.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#888;">No orders yet.</td></tr>';
+          return;
+        }
+
+        snapshot.forEach(function(item) {
+          const data = item.data();
+          const time = data.time ? data.time.toDate().toLocaleString("en-IN") : "—";
+          const statusColor = data.status === "Delivered" ? "#087f23" : "#e65100";
+
+          box.innerHTML += `
+            <tr>
+              <td>${data.name || "—"}</td>
+              <td>${data.phone || "—"}</td>
+              <td>${data.product || "—"}</td>
+              <td>${data.quantity || "—"}</td>
+              <td>${data.address || "—"}</td>
+              <td>${time}</td>
+              <td>
+                <button class="status-btn"
+                  style="background:${statusColor}"
+                  onclick="toggleStatus('${item.id}', '${data.status}')">
+                  ${data.status}
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+      }, function(error) {
+        box.innerHTML = `<tr><td colspan="7" style="color:red;padding:20px;">Error: ${error.message}</td></tr>`;
+      });
+
+    // ✅ Toggle order status
+    function toggleStatus(id, currentStatus) {
+      const newStatus = currentStatus === "Pending" ? "Delivered" : "Pending";
+      db.collection("orders").doc(id).update({ status: newStatus })
+        .catch(function(err) {
+          alert("Update failed: " + err.message);
+        });
+    }
+  </script>
+
+</body>
+</html>
